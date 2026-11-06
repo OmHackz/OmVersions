@@ -1,0 +1,29 @@
+{
+  "projects": [
+    {
+      "id": "helio",
+      "repo": "https://github.com/OmHackz-dev/Helio",
+      "displayName": "Helio",
+      "description": "A Minecraft launcher",
+      "website": "https://example.com"
+    },
+    {
+      "id": "mangobanks",
+      "repo": "https://github.com/OmHackz-dev/MangoBanks",
+      "displayName": "MangoBanks",
+      "description": "A Minecraft plugin"
+    },
+    {
+      "id": "extraz",
+      "repo": "https://github.com/OmHackz-dev/ExtraZ",
+      "displayName": "ExtraZ",
+      "description": "A Minecraft plugin"
+    },
+    {
+      "id": "mangovotes",
+      "repo": "https://github.com/OmHackz-dev/MangoVotes",
+      "displayName": "MangoVotes",
+      "description": "A Minecraft plugin"
+    }
+  ]
+}

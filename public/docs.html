@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmVersions &bull; API Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&family=Ubuntu+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-mark">OV</span>
+        <div>
+          <div class="brand-name">OmVersions</div>
+          <div class="brand-tag">API documentation</div>
+        </div>
+      </div>
+      <a class="btn" href="/">&larr; Back to landing page</a>
+    </div>
+  </header>
+
+  <main class="container docs">
+    <article>
+      <h1>OmVersions API</h1>
+      <p class="lead">Base URL: <code>https://version.omhackz.top/api/v1</code></p>
+
+      <section>
+        <h2>Getting started</h2>
+        <p>
+          OmVersions is a centralized version management API that automatically fetches GitHub releases
+          for registered projects. Projects are registered exclusively in <code>projects.json</code> at the
+          repository root. Adding a project requires editing only that file; no route registration or code
+          changes are necessary.
+        </p>
+      </section>
+
+      <section>
+        <h2>Registering a project</h2>
+        <p>Add an entry to <code>projects.json</code>:</p>
+        <pre><code>{
+  "projects": [
+    {
+      "id": "myproject",
+      "repo": "https://github.com/username/myproject"
+    }
+  ]
+}</code></pre>
+        <p>
+          Optional fields: <code>displayName</code>, <code>description</code>, <code>website</code>. The
+          original two-field format remains fully supported. Project IDs are normalized to lowercase and
+          must match <code>^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$</code>. Duplicate IDs and malformed
+          repository URLs are rejected.
+        </p>
+      </section>
+
+      <section>
+        <h2>Endpoints</h2>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>GET</td><td><code>/api/v1</code></td><td>API metadata</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/projects</code></td><td>Registered projects</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/stats</code></td><td>API statistics</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id</code></td><td>Project details with latest stable release</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/latest</code></td><td>Latest stable version</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/latest?channel=beta</code></td><td>Latest release for a channel</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/releases</code></td><td>Release history</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/releases?channel=rc</code></td><td>Release history filtered by channel</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/releases/:tag</code></td><td>Specific release by tag</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/changelog</code></td><td>Latest changelog</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/assets</code></td><td>Latest release assets</td></tr>
+            <tr><td>GET</td><td><code>/api/v1/:id/check?current=1.0.0</code></td><td>Check whether an update exists</td></tr>
+            <tr><td>GET</td><td><code>/health</code></td><td>Health status</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Release channels</h2>
+        <p>
+          Supported channels: <code>stable</code>, <code>beta</code>, <code>alpha</code>, <code>rc</code>,
+          <code>nightly</code>. Stable is the default. Channels are classified from the release tag using
+          this convention:
+        </p>
+        <table>
+          <thead><tr><th>Channel</th><th>Tag examples</th></tr></thead>
+          <tbody>
+            <tr><td><code>stable</code></td><td><code>v1.0.0</code>, <code>1.2.0</code></td></tr>
+            <tr><td><code>beta</code></td><td><code>v1.1.0-beta.1</code></td></tr>
+            <tr><td><code>alpha</code></td><td><code>v1.2.0-alpha.2</td></tr>
+            <tr><td><code>rc</code></td><td><code>v2.0.0-rc.1</code></td></tr>
+            <tr><td><code>nightly</td><td><code>v2.1.0-nightly.20261106</code></td></tr>
+          </tbody>
+        </table>
+        <p>
+          Unrecognized prerelease identifiers are treated as prereleases and are never classified as stable.
+          Draft releases are ignored. GitHub's <code>prerelease</code> field is combined with the tag
+          convention for classification.
+        </p>
+      </section>
+
+      <section>
+        <h2>Update checking</h2>
+        <p>
+          <code>GET /api/v1/:id/check?current=1.0.0&amp;channel=stable</code> uses proper semantic version
+          comparison, so <code>1.10.0</code> is correctly recognized as newer than <code>1.9.0</code>.
+          Optional <code>v</code> prefixes are supported. Invalid versions return <code>INVALID_VERSION</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Example: desktop application update check on startup</h2>
+        <pre><code class="language-javascript">async function checkForUpdate(projectId, currentVersion) {
+  const res = await fetch(
+    `https://version.omhackz.top/api/v1/${projectId}/check?current=${encodeURIComponent(currentVersion)}&channel=stable`
+  );
+  const json = await res.json();
+  if (!json.success) return null;
+  return json.data; // { project, currentVersion, latestVersion, updateAvailable, releaseUrl }
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>Error codes</h2>
+        <table>
+          <thead><tr><th>Code</th><th>Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>PROJECT_NOT_FOUND</code></td><td>404</td><td>Project is not registered.</td></tr>
+            <tr><td><code>RELEASE_NOT_FOUND</code></td><td>404</td><td>Requested release tag not found.</td></tr>
+            <tr><td><code>NO_RELEASES</code></td><td>404</td><td>Project has no published releases.</td></tr>
+            <tr><td><code>INVALID_VERSION</code></td><td>400</td><td>Provided version is not valid semver.</td></tr>
+            <tr><td><code>INVALID_CHANNEL</code></td><td>400</td><td>Channel is not supported.</td></tr>
+            <tr><td><code>INVALID_CONFIGURATION</code></td><td>500</td><td>Project configuration is invalid.</td></tr>
+            <tr><td><code>GITHUB_RATE_LIMITED</code></td><td>429</td><td>GitHub API rate limit exceeded.</td></tr>
+            <tr><td><code>UPSTREAM_ERROR</code></td><td>502</td><td>GitHub API communication error.</td></tr>
+            <tr><td><code>INTERNAL_ERROR</code></td><td>500</td><td>Internal server error.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Caching</h2>
+        <p>
+          Successful GitHub release responses are cached with a default TTL of 5 minutes, configurable via
+          the <code>RELEASE_CACHE_TTL</code> variable. Cloudflare Workers Cache API is not globally
+          replicated between all data centers, so cache hits are local to the serving data center. Version
+          information eventually updates without manual intervention.
+        </p>
+      </section>
+
+      <section>
+        <h2>Client integration examples</h2>
+        <h3>JavaScript / TypeScript</h3>
+        <pre><code class="language-javascript">const res = await fetch("https://version.omhackz.top/api/v1/helio/latest");
+const json = await res.json();
+// json.data.version, json.data.assets, json.data.releaseUrl</code></pre>
+        <h3>Java</h3>
+        <pre><code class="language-java">HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://version.omhackz.top/api/v1/helio/latest"))
+    .build();
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+// Parse response.body() with Jackson/Gson</code></pre>
+        <h3>Python</h3>
+        <pre><code class="language-python">import requests
+
+response = requests.get("https://version.omhackz.top/api/v1/helio/latest")
+data = response.json()["data"]
+version = data["version"]
+assets = data["assets"]</code></pre>
+        <h3>Rust</h3>
+        <pre><code class="language-rust">let client = reqwest::Client::new();
+let resp: serde_json::Value = client
+    .get("https://version.omhackz.top/api/v1/helio/latest")
+    .send()
+    .await?
+    .json()
+    .await?;
+let version = resp["data"]["version"].as_str().unwrap();</code></pre>
+      </section>
+
+      <section>
+        <h2>Deployment</h2>
+        <p>
+          OmVersions runs on Cloudflare Workers. Install dependencies, build, and deploy:
+        </p>
+        <pre><code class="language-shell">npm install
+npm run build
+npm run deploy</code></pre>
+        <p>
+          Attach the custom domain <code>version.omhackz.top</code> through the Cloudflare dashboard under
+          Workers &rarrow; Your domain, or add a CNAME record pointing to your Workers route. Deployment
+          uses <code>CLOUDFLARE_API_TOKEN</code> and <code>CLOUDFLARE_ACCOUNT_ID</code> secrets via GitHub Actions.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 OmVersions. Open source under the MIT License.</p>
+    </div>
+  </footer>
+</body>
+</html>

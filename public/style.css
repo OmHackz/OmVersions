@@ -1,0 +1,336 @@
+:root {
+  --accent: #ff7d2a;
+  --accent-dark: #e86a1c;
+  --text: #0f0f0f;
+  --muted: #5b5b5b;
+  --bg: #ffffff;
+  --card: #fafafa;
+  --border: #e5e5e5;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Urbanist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.4px;
+}
+
+.brand-tag {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border);
+}
+
+.intro {
+  padding: 40px 0;
+}
+
+.intro h1 {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
+}
+
+.intro p {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 640px;
+  margin: 0 0 20px;
+}
+
+.api-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 620px;
+  margin-top: 16px;
+}
+
+.api-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.api-url {
+  flex: 1;
+  font-family: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  color: var(--accent-dark);
+  word-break: break-all;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.btn-small {
+  padding: 6px 14px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  padding: 10px 0 30px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+}
+
+.projects {
+  padding: 20px 0 40px;
+}
+
+.projects h2, .endpoints h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 16px;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.project-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-card .project-name {
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.project-card .project-repo {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: "Ubuntu Mono", ui-monospace, monospace;
+  word-break: break-all;
+}
+
+.project-card .release-info {
+  font-size: 13px;
+  color: var(--accent-dark);
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.project-card .release-muted {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.placeholder {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px dashed var(--border);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.endpoints {
+  padding: 20px 0 40px;
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.example {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.example-method {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-dark);
+  text-transform: uppercase;
+}
+
+.example code {
+  font-size: 14px;
+  color: var(--text);
+  background: transparent;
+  padding: 0;
+  word-break: break-all;
+}
+
+.example p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.links {
+  padding: 30px 0;
+  display: flex;
+  gap: 12px;
+}
+
+.footer {
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+code {
+  font-family: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  background: #f2f2f2;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #a62c00;
+}
+
+pre {
+  background: #f2f2f2;
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  color: var(--text);
+}
+
+h2 code {
+  color: inherit;
+}
+
+@media (max-width: 600px) {
+  .intro h1 { font-size: 26px; }
+  .links { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+}
