@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmVersions — Version Management API</title>
+  <title>OmVersions — Version API for GitHub releases</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&family=Ubuntu+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,87 +15,81 @@
         <span class="brand-mark">OV</span>
         <div>
           <div class="brand-name">OmVersions</div>
-          <div class="brand-tag">Centralized version management API</div>
+          <div class="brand-tag">Version API for GitHub releases</div>
         </div>
       </div>
-      <a class="btn" href="/docs">Documentation</a>
+      <nav class="nav">
+        <a class="nav-link" href="/docs">Documentation</a>
+        <a class="nav-link nav-link--ghost" href="https://github.com/OmHackz-dev/OmVersions" target="_blank" rel="noopener">GitHub</a>
+      </nav>
     </div>
   </header>
 
   <main class="container">
-    <section class="intro">
-      <h1>Version API for GitHub releases</h1>
-      <p>
-        OmVersions is a lightweight, centralized version API that automatically fetches releases from
-        registered GitHub repositories. Register a project once in <code>projects.json</code> and the API
-        exposes its releases, latest version, assets, and update checks &mdash; no manual version entry required.
+    <section class="hero">
+      <h1 class="hero-title">OmVersions</h1>
+      <p class="hero-desc">
+        A centralized version API that automatically fetches releases from registered GitHub
+        repositories. Register a project once in <code>projects.json</code> and the API exposes
+        releases, latest versions, assets, and update checks &mdash; no manual version entry required.
       </p>
-      <div class="api-bar">
-        <span class="api-label">Base URL</span>
-        <code class="api-url">https://version.omhackz.top/api/v1</code>
-        <button class="btn btn-small copy-url" data-clipboard="https://version.omhackz.top/api/v1">Copy</button>
+      <div class="copy-bar">
+        <span class="copy-label">Base URL</span>
+        <code class="copy-url">https://version.omhackz.top/api/v1</code>
+        <button class="btn btn--accent" data-clipboard="https://version.omhackz.top/api/v1">Copy</button>
       </div>
     </section>
 
-    <section class="stats">
-      <div class="stat-card">
-        <div class="stat-value" id="projectCount">-</div>
-        <div class="stat-label">Registered projects</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="releaseCount">-</div>
-        <div class="stat-label">Latest stable releases</div>
-      </div>
-    </section>
+    <hr class="divider">
 
     <section class="projects">
-      <h2>Registered projects</h2>
-      <div class="project-grid" id="projectGrid">
+      <h2 class="section-title">Registered projects</h2>
+      <div class="project-list" id="projectList">
         <div class="placeholder">Loading projects&hellip;</div>
       </div>
-      <p class="hint">
-        Add a project by editing <code>projects.json</code> in the repository and pushing to <code>main</code>.
-        No code changes required.
+      <p class="note">
+        Add a project by editing <code>projects.json</code> and pushing to <code>main</code>. No code changes required.
       </p>
     </section>
 
+    <hr class="divider">
+
     <section class="endpoints">
-      <h2>Endpoint examples</h2>
-      <div class="example-grid">
-        <div class="example">
-          <div class="example-method">GET</div>
-          <code>/api/v1/helio/latest</code>
-          <p>Latest stable release for Helio.</p>
+      <h2 class="section-title">Endpoint examples</h2>
+      <div class="endpoint-list">
+        <div class="endpoint">
+          <code class="endpoint-method">GET</code>
+          <code class="endpoint-path">/api/v1/helio/latest</code>
+          <p class="endpoint-desc">Latest stable release for Helio.</p>
         </div>
-        <div class="example">
-          <div class="example-method">GET</div>
-          <code>/api/v1/helio/latest?channel=beta</code>
-          <p>Latest beta release.</p>
+        <div class="endpoint">
+          <code class="endpoint-method">GET</code>
+          <code class="endpoint-path">/api/v1/helio/latest?channel=beta</code>
+          <p class="endpoint-desc">Latest beta release.</p>
         </div>
-        <div class="example">
-          <div class="example-method">GET</div>
-          <code>/api/v1/helio/check?current=1.0.0</code>
-          <p>Check whether an update is available.</p>
+        <div class="endpoint">
+          <code class="endpoint-method">GET</code>
+          <code class="endpoint-path">/api/v1/helio/check?current=1.0.0</code>
+          <p class="endpoint-desc">Check whether an update is available.</p>
         </div>
-        <div class="example">
-          <div class="example-method">GET</div>
-          <code>/api/v1/helio/releases</code>
-          <p>Full release history.</p>
+        <div class="endpoint">
+          <code class="endpoint-method">GET</code>
+          <code class="endpoint-path">/api/v1/helio/releases</code>
+          <p class="endpoint-desc">Full release history.</p>
         </div>
       </div>
     </section>
 
-    <section class="links">
-      <a class="btn" href="/docs">Read API documentation &rarr;</a>
-      <a class="btn btn-outline" href="https://github.com/OmHackz-dev/OmVersions" target="_blank" rel="noopener">GitHub repository &rarr;</a>
+    <hr class="divider">
+
+    <section class="footer">
+      <p class="footer-copy">&copy; 2026 OmVersions. Open source under the MIT License.</p>
+      <div class="footer-links">
+        <a class="footer-link" href="/docs">Read API documentation</a>
+        <a class="footer-link" href="https://github.com/OmHackz-dev/OmVersions" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
     </section>
   </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2026 OmVersions. Open source under the MIT License.</p>
-    </div>
-  </footer>
 
   <script src="script.js"></script>
 </body>

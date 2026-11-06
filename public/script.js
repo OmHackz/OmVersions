@@ -1,9 +1,7 @@
 (function () {
   const BASE = window.location.origin;
-  const grid = document.getElementById("projectGrid");
-  const countEl = document.getElementById("projectCount");
-  const releaseCountEl = document.getElementById("releaseCount");
-  const copyBtn = document.querySelector(".copy-url");
+  const list = document.getElementById("projectList");
+  const copyBtn = document.querySelector('[data-clipboard]');
 
   async function fetchJson(path) {
     const res = await fetch(path);
@@ -11,59 +9,54 @@
     return res.json();
   }
 
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   async function render() {
     try {
       const data = await fetchJson(`${BASE}/api/v1/projects`);
       const projects = data.data.projects || [];
 
-      if (countEl) countEl.textContent = projects.length;
-
-      grid.innerHTML = "";
-      let releasesFound = 0;
+      list.innerHTML = "";
 
       for (const project of projects) {
-        const card = document.createElement("div");
-        card.className = "project-card";
+        const item = document.createElement("div");
+        item.className = "project-item";
 
-        const nameEl = document.createElement("div");
-        nameEl.className = "project-name";
-        nameEl.textContent = project.displayName || project.id;
+        const name = document.createElement("div");
+        name.className = "project-name";
+        name.textContent = project.displayName || project.id;
 
-        const repoEl = document.createElement("div");
-        repoEl.className = "project-repo";
-        repoEl.textContent = project.repository;
+        const repo = document.createElement("div");
+        repo.className = "project-repo";
+        repo.textContent = project.repository;
 
-        card.appendChild(nameEl);
-        card.appendChild(repoEl);
+        const version = document.createElement("div");
+        version.className = "project-muted";
+        version.textContent = "No releases yet";
+
+        item.appendChild(name);
+        item.appendChild(repo);
+        item.appendChild(version);
 
         try {
           const latest = await fetchJson(`${BASE}/api/v1/${project.id}/latest`);
           const release = latest.data;
           if (release && release.version) {
-            releasesFound++;
-            const info = document.createElement("div");
-            info.className = "release-info";
-            info.textContent = `Latest stable: ${release.version}`;
-            card.appendChild(info);
-          } else {
-            const muted = document.createElement("div");
-            muted.className = "release-muted";
-            muted.textContent = "No releases yet";
-            card.appendChild(muted);
+            version.className = "project-version";
+            version.textContent = release.version;
           }
         } catch (e) {
-          const muted = document.createElement("div");
-          muted.className = "release-muted";
-          muted.textContent = "Release info unavailable";
-          card.appendChild(muted);
+          // keep muted state
         }
 
-        grid.appendChild(card);
+        list.appendChild(item);
       }
-
-      if (releaseCountEl) releaseCountEl.textContent = releasesFound;
     } catch (e) {
-      grid.innerHTML = '<div class="placeholder">Unable to load projects.</div>';
+      list.innerHTML = '<div class="placeholder">Unable to load projects.</div>';
     }
   }
 

@@ -1,38 +1,21 @@
 # OmVersions
 
-Centralized version management API for GitHub releases, built on Cloudflare Workers, Hono, and TypeScript.
+[![GitHub release](https://img.shields.io/github/release/OmHackz-dev/OmVersions.svg?label=latest)](https://github.com/OmHackz-dev/OmVersions/releases/latest)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Cloudflare Workers](https://img.shields.io/badge/deployed-on-Cloudflare%20Workers-f38020?logo=cloudflare)](https://version.omhackz.top)
+[![TypeScript](https://img.shields.io/badge/lang-TypeScript-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Hono](https://img.shields.io/badge/framework-Hono-white?logo=hono)](https://hono.dev/)
+[![Vitest](https://img.shields.io/badge/tested-with-Vitest-yellow?logo=vitest)](https://vitest.dev/)
 
-Hosted at `https://version.omhackz.top`.
+OmVersions is a centralized version API that automatically fetches releases from registered GitHub repositories. Register a project once in `projects.json` and the API exposes releases, latest versions, assets, and update checks — no manual version entry required.
 
-## Overview
+Hosted at [version.omhackz.top](https://version.omhackz.top).
 
-OmVersions is a lightweight, centralized version API that automatically fetches releases from registered
-GitHub repositories. Register a project once in `projects.json` and the API exposes its releases, latest
-version, assets, and update checks — no manual version entry required.
+## The idea
 
-It supports any GitHub-hosted project: launchers, plugins, CLIs, tools, and libraries.
+Software projects release new versions on GitHub. Desktop apps, launchers, plugins, and CLIs need to know when an update is available. OmVersions removes the manual work: instead of entering version numbers, changelogs, and download links by hand, you point the API at a GitHub repository and it pulls everything automatically.
 
-## Features
-
-- Single-file project configuration: editing `projects.json` is all it takes to add a project
-- Automatic GitHub release fetching (tags, versions, changelogs, assets, download URLs)
-- Stable and prerelease release channels (`stable`, `beta`, `alpha`, `rc`, `nightly`)
-- Semantic version comparison for update checks (`1.10.0` > `1.9.0`)
-- Cloudflare Workers Cache API to reduce GitHub API usage (default 5-minute TTL)
-- Standardized JSON error responses
-- Landing page and full API documentation
-- No database, no login, no frontend framework
-- GitHub Actions CI/CD with automatic deployment on push to `main`
-
-## Technology stack
-
-- TypeScript
-- Cloudflare Workers
-- Hono
-- GitHub REST API
-- Vitest
-- wrangler
-- npm
+Adding a project requires editing exactly one file: `projects.json`.
 
 ## Quick start
 
@@ -49,7 +32,7 @@ The worker runs locally at `http://localhost:8787`.
 
 ### Adding a new project
 
-Adding a project requires editing only `projects.json`:
+Editing `projects.json` is all it takes:
 
 ```json
 {
@@ -58,7 +41,7 @@ Adding a project requires editing only `projects.json`:
 }
 ```
 
-Then commit and push. Once deployed, the project is available at:
+Commit and push. Once deployed, the project is available at:
 
 ```
 https://version.omhackz.top/api/v1/myproject/latest
@@ -88,6 +71,8 @@ https://version.omhackz.top/api/v1/myproject/latest
 - `repo` (required): GitHub repository URL.
 - `displayName`, `description`, `website` (optional).
 
+The original two-field format remains fully supported.
+
 ## API
 
 Base URL: `https://version.omhackz.top/api/v1`
@@ -101,10 +86,11 @@ Base URL: `https://version.omhackz.top/api/v1`
 | GET | `/api/v1/:id/latest` | Latest stable version |
 | GET | `/api/v1/:id/latest?channel=beta` | Latest release for a channel |
 | GET | `/api/v1/:id/releases` | Release history |
+| GET | `/api/v1/:id/releases?channel=rc` | Release history filtered by channel |
 | GET | `/api/v1/:id/releases/:tag` | Specific release |
 | GET | `/api/v1/:id/changelog` | Latest changelog |
 | GET | `/api/v1/:id/assets` | Latest release assets |
-| GET | `/api/v1/:id/check?current=1.0.0` | Check for updates |
+| GET | `/api/v1/:id/check?current=1.0.0` | Check whether an update exists |
 | GET | `/health` | Health status |
 
 ### Release channels
@@ -129,7 +115,20 @@ Unrecognized prerelease identifiers are treated as prereleases, never as stable.
 GET /api/v1/helio/check?current=1.0.0&channel=stable
 ```
 
-Uses proper semantic version comparison. Optional `v` prefixes are supported.
+Uses proper semantic version comparison, so `1.10.0` is correctly recognized as newer than `1.9.0`. Optional `v` prefixes are supported. Invalid versions return a documented `INVALID_VERSION` error.
+
+## Desktop application: check for updates on startup
+
+```javascript
+async function checkForUpdate(projectId, currentVersion) {
+  const res = await fetch(
+    `https://version.omhackz.top/api/v1/${projectId}/check?current=${encodeURIComponent(currentVersion)}&channel=stable`
+  );
+  const json = await res.json();
+  if (!json.success) return null;
+  return json.data; // { project, currentVersion, latestVersion, updateAvailable, releaseUrl }
+}
+```
 
 ## Cloudflare deployment
 
@@ -139,8 +138,7 @@ npm run build
 npm run deploy
 ```
 
-Attach the custom domain `version.omhackz.top` through the Cloudflare dashboard:
-Workers → Domains / Workers Routes, or add a DNS CNAME pointing to your Workers route.
+Attach the custom domain `version.omhackz.top` through the Cloudflare dashboard: Workers → Domains / Workers Routes, or add a DNS CNAME pointing to your Workers route.
 
 Optional secret (never committed):
 
@@ -150,8 +148,9 @@ wrangler secret put GITHUB_TOKEN
 
 ## GitHub Actions
 
-On push to `main`: install dependencies, typecheck, test, build, and deploy (when `CLOUDFLARE_API_TOKEN`
-and `CLOUDFLARE_ACCOUNT_ID` secrets are configured). Pull requests run validation only.
+On push to `main`: install dependencies, typecheck, test, build, and deploy (when `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets are configured). Pull requests run validation only.
+
+Configuration-only updates (edits to `projects.json`) validate, test, build, and deploy automatically — no application code changes necessary.
 
 ## Environment variables
 
@@ -170,4 +169,4 @@ Tests mock GitHub API calls and do not require network access.
 
 ## License
 
-MIT License
+[MIT](LICENSE)
