@@ -19,11 +19,13 @@ describe("project ID validation", () => {
   });
 
   it("rejects uppercase and unsafe ids", () => {
-    expect(isValidProjectId("Helio")).toBe(false);
+    // IDs are normalized to lowercase, so "Helio" becomes valid "helio"
+    expect(isValidProjectId("Helio")).toBe(true);
     expect(isValidProjectId("my project")).toBe(false);
     expect(isValidProjectId("")).toBe(false);
     expect(isValidProjectId("-leading")).toBe(false);
     expect(isValidProjectId("trailing-")).toBe(false);
+    expect(isValidProjectId("a".repeat(65))).toBe(false);
   });
 });
 

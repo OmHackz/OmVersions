@@ -1,7 +1,3 @@
-import { Cache } from "@cloudflare/workers-types/experimental";
-
-import { Cache } from "@cloudflare/workers-types/experimental";
-
 export interface CacheService {
   get(key: string): Promise<Response | null>;
   put(key: string, response: Response, ttlSeconds: number): Promise<void>;
@@ -16,7 +12,8 @@ export class WorkersCache implements CacheService {
   }
 
   async get(key: string): Promise<Response | null> {
-    return this.cache.match(key);
+    const response = await this.cache.match(key);
+    return response ?? null;
   }
 
   async put(key: string, response: Response, ttlSeconds: number): Promise<void> {
@@ -73,9 +70,9 @@ export function defaultTtl(env: { RELEASE_CACHE_TTL?: string }): number {
 }
 
 export function createCacheService(env: { RELEASE_CACHE_TTL?: string }): CacheService {
-  const cachesStorage = (globalThis as unknown as { caches?: { default?: unknown } }).caches;
+  const cachesStorage = (globalThis as unknown as { caches?: { default?: Cache } }).caches;
   if (cachesStorage?.default) {
-    return new WorkersCache(cachesStorage.default as Cache);
+    return new WorkersCache(cachesStorage.default);
   }
   return new MemoryCache();
 }

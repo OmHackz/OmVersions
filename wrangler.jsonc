@@ -3,7 +3,6 @@
   "name": "omversions",
   "main": "src/index.ts",
   "compatibility_date": "2026-11-06",
-  "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true
   },
@@ -12,8 +11,7 @@
   },
   "assets": {
     "directory": "public",
-    "binding": "ASSETS",
-    "include": ["index.html", "docs.html", "style.css", "script.js"]
+    "binding": "ASSETS"
   },
   "d1_databases": [],
   "r2_buckets": []

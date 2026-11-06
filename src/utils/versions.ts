@@ -19,8 +19,8 @@ export function parseSemVer(version: string): SemVer | null {
     return null;
   }
 
-  const prereleaseRaw = match[4];
-  const buildRaw = match[5];
+  const prereleaseRaw = match[4] ?? undefined;
+  const buildRaw = match[5] ?? undefined;
 
   return {
     major: parseInt(match[1], 10),
@@ -47,7 +47,6 @@ export function compareSemVer(a: string, b: string): number {
   if (va.minor !== vb.minor) return va.minor - vb.minor;
   if (va.patch !== vb.patch) return va.patch - vb.patch;
 
-  // A version without prerelease is greater than one with prerelease.
   if (va.prerelease === null && vb.prerelease === null) return 0;
   if (va.prerelease === null) return 1;
   if (vb.prerelease === null) return -1;

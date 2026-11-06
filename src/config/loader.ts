@@ -1,17 +1,17 @@
 import { validateProjectConfig } from "../utils/validation";
 
-export interface LoaderResult {
-  projects: ProjectConfig[];
-  errors: string[];
-  warnings: string[];
-}
-
 export interface ProjectConfig {
   id: string;
   repo: string;
   displayName?: string;
   description?: string;
   website?: string;
+}
+
+export interface LoaderResult {
+  projects: ProjectConfig[];
+  errors: string[];
+  warnings: string[];
 }
 
 export function loadProjects(config: unknown): LoaderResult {
@@ -67,5 +67,10 @@ export function findProject(projects: ProjectConfig[], id: string): ProjectConfi
 export function repoFromConfig(project: ProjectConfig): { owner: string; repo: string } {
   const url = new URL(project.repo);
   const parts = url.pathname.replace(/\/+$/, "").replace(/^\//, "").split("/");
-  return { owner: parts[0], repo: parts[1].replace(/\.git$/i, "") };
+  const owner = parts[0];
+  const repo = parts[1]?.replace(/\.git$/i, "");
+  if (!owner || !repo) {
+    throw new Error("Invalid repository URL");
+  }
+  return { owner, repo };
 }

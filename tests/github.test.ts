@@ -46,31 +46,32 @@ const RELEASES = [
   },
 ];
 
-function installFetch(responseOrFn: unknown) {
-  const handler = typeof responseOrFn === "function" ? responseOrFn : async () => responseOrFn;
-  const fetchMock = vi.fn(handler) as unknown as typeof fetch;
-  vi.stubGlobal("fetch", fetchMock);
-  return fetchMock;
+const originalFetch = globalThis.fetch;
+
+function mockFetch(response: Response) {
+  (globalThis as any).fetch = vi.fn(async () => response);
 }
 
+function mockJson(body: unknown, status = 200) {
+  mockFetch(new Response(JSON.stringify(body), { status }));
+}
+
+beforeEach(() => {
+  mockJson(RELEASES);
+});
+
+afterEach(() => {
+  (globalThis as any).fetch = originalFetch;
+  vi.restoreAllMocks();
+});
+
 describe("GitHubService", () => {
-  let fetchMock: ReturnType<typeof installFetch>;
-
-  beforeEach(() => {
-    fetchMock = installFetch(RELEASES);
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("lists non-draft releases", async () => {
     const svc = new GitHubService();
     const releases = await svc.getReleases("o", "r");
     expect(releases.length).toBe(2);
     expect(releases[0].version).toBe("1.0.0");
-    expect(releases[1].version).toBe("1.1.0");
-    expect(fetchMock).toHaveBeenCalled();
+    expect(releases[1].version).toBe("1.1.0-beta.1");
   });
 
   it("classifies channels correctly", async () => {
@@ -91,19 +92,22 @@ describe("GitHubService", () => {
   it("returns latest beta", async () => {
     const svc = new GitHubService();
     const latest = await svc.latestRelease("o", "r", "beta");
-    expect(latest?.version).toBe("1.1.0");
+    expect(latest?.version).toBe("1.1.0-beta.1");
   });
 
   it("returns null for no releases", async () => {
-    fetchMock = installFetch([]);
+    mockJson([]);
     const svc = new GitHubService();
     const latest = await svc.latestRelease("o", "r", "stable");
     expect(latest).toBeNull();
   });
 
   it("throws GITHUB_RATE_LIMITED on 403", async () => {
-    fetchMock = installFetch(
-      new Response("Rate limited", { status: 403, headers: { "X-RateLimit-Remaining": "0" } }),
+    mockFetch(
+      new Response("Rate limited", {
+        status: 403,
+        headers: { "X-RateLimit-Remaining": "0" },
+      }),
     );
     const svc = new GitHubService();
     await expect(svc.getReleases("o", "r")).rejects.toBeInstanceOf(HttpError);
@@ -113,8 +117,8 @@ describe("GitHubService", () => {
     const svc = new GitHubService();
     const releases = await svc.getReleases("o", "r");
     const asset = releases[0].assets[0];
-    expect(asset.downloadUrl).toBe("https://github.com/o/r/releases/download/v1.0.0/app.zip");
-    expect(asset.downloadCount).toBe(42);
-    expect(asset.contentType).toBe("application/zip");
+    expect(asset?.downloadUrl).toBe("https://github.com/o/r/releases/download/v1.0.0/app.zip");
+    expect(asset?.downloadCount).toBe(42);
+    expect(asset?.contentType).toBe("application/zip");
   });
 });

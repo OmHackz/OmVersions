@@ -1,3 +1,5 @@
+import { ProjectConfig } from "../types";
+
 export const PROJECT_ID_REGEX = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
 export const SUPPORTED_CHANNELS = ["stable", "beta", "alpha", "rc", "nightly"] as const;
@@ -43,7 +45,6 @@ export function parseGitHubRepoUrl(repoUrl: string): { owner: string; repo: stri
       return null;
     }
 
-    // Reject paths deeper than owner/repo (e.g. /owner/repo/subdir)
     if (parts.length > 2) {
       return null;
     }
@@ -89,10 +90,11 @@ export function validateProjectConfig(entry: unknown): { project: ProjectConfig;
   if (typeof raw["description"] === "string" && raw["description"].trim()) {
     project.description = raw["description"].trim();
   }
-  if (typeof raw["website"] === "string" && raw["website"].trim()) {
+  const websiteRaw = raw["website"];
+  if (typeof websiteRaw === "string" && websiteRaw.trim()) {
     try {
-      new URL(raw["website"].trim());
-      project.website = raw["website"].trim();
+      new URL(websiteRaw.trim());
+      project.website = websiteRaw.trim();
     } catch {
       warnings.push(`Invalid website URL for project ${normalizedId}`);
     }
@@ -126,8 +128,6 @@ export function classifyChannel(tag: string): ChannelName {
   if (/-beta/i.test(lower)) return "beta";
   if (/-alpha/i.test(lower)) return "alpha";
 
-  // Unrecognized prerelease identifiers fall back to stable channel rejection:
-  // they are treated as prereleases without a named channel.
   if (/-.+/i.test(lower)) return "stable";
 
   return "stable";

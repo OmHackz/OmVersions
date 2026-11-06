@@ -1,7 +1,7 @@
-import { Env, GitHubRelease, Release } from "../types";
-import { HttpError, ErrorCodes, jsonResponse } from "../utils/errors";
-import { extractVersion, classifyChannel, parseGitHubRepoUrl } from "../utils/validation";
-import { compareSemVer, isValidSemVer } from "../utils/versions";
+import { GitHubRelease, Release } from "../types";
+import { HttpError } from "../utils/errors";
+import { extractVersion, classifyChannel } from "../utils/validation";
+import { compareSemVer } from "../utils/versions";
 
 const GITHUB_API = "https://api.github.com";
 
@@ -88,11 +88,9 @@ export class GitHubService {
   async getReleases(owner: string, repo: string, signal?: AbortSignal): Promise<Release[]> {
     const raw = await this.listReleases(owner, repo, signal);
 
-    const releases = raw
+    return raw
       .filter((r) => !r.draft)
       .map((r) => this.mapRelease(owner, repo, r));
-
-    return releases;
   }
 
   private mapRelease(owner: string, repo: string, r: GitHubRelease): Release {
@@ -144,7 +142,6 @@ export class GitHubService {
       return null;
     }
 
-    // Sort newest first by published date, fall back to semver order.
     candidates.sort((a, b) => {
       const pa = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
       const pb = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
@@ -156,7 +153,7 @@ export class GitHubService {
       }
     });
 
-    return candidates[0];
+    return candidates[0] ?? null;
   }
 
   async findReleaseByTag(
@@ -182,6 +179,6 @@ export async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T
   });
 }
 
-export function createGitHubService(env: Env): GitHubService {
-  return new GitHubService({ token: env.GITHUB_TOKEN });
+export function createGitHubService(token?: string): GitHubService {
+  return new GitHubService({ token });
 }

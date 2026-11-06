@@ -1,6 +1,6 @@
-import { Env, Release } from "../types";
+import { Env, Release, LatestReleaseResponse } from "../types";
 import { HttpError, jsonResponse } from "../utils/errors";
-import { isValidSemVer, compareSemVer, extractVersion, classifyChannel } from "../utils/validation";
+import { isValidSemVer, compareSemVer } from "../utils/versions";
 import { GitHubService, withTimeout } from "./github";
 import { CacheService, cacheKey, defaultTtl } from "./cache";
 
@@ -9,19 +9,6 @@ const REQUEST_TIMEOUT_MS = 15000;
 interface CachedJson<T> {
   data: T;
   cached: boolean;
-}
-
-export interface LatestReleaseView {
-  id: string;
-  repository: string;
-  version: string;
-  tag: string;
-  channel: string;
-  prerelease: boolean;
-  publishedAt: string | null;
-  changelog: string;
-  releaseUrl: string;
-  assets: Release["assets"];
 }
 
 export class ReleaseService {
@@ -73,13 +60,13 @@ export class ReleaseService {
     owner: string,
     repo: string,
     channel: string,
-  ): Promise<LatestReleaseView> {
+  ): Promise<LatestReleaseResponse> {
     const key = cacheKey(projectId, `latest:${channel}`);
     const cached = await this.cache.get(key);
 
     if (cached) {
       try {
-        const body = (await cached.json()) as CachedJson<LatestReleaseView>;
+        const body = (await cached.json()) as CachedJson<LatestReleaseResponse>;
         return body.data;
       } catch {
         // fall through to fetch
@@ -99,7 +86,7 @@ export class ReleaseService {
         throw HttpError.for("NO_RELEASES");
       }
 
-      const view: LatestReleaseView = {
+      const view: LatestReleaseResponse = {
         id: release.id,
         repository: release.repository,
         version: release.version,
