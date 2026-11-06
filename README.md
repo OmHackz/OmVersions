@@ -147,7 +147,7 @@ wrangler secret put GITHUB_TOKEN
 ```
 ## GitHub Actions
 
-No CI/CD workflow is included. Deploy manually with `wrangler deploy` after setting the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets (or attach them via `wrangler config`).
+CI runs TypeScript validation and tests on push to `main` and on pull requests. No deployment is performed automatically; deploy manually with `wrangler deploy`.
 
 ## Environment variables
 
