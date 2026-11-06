@@ -135,6 +135,7 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   padding: 16px;
   background: #f7f7f7;
@@ -361,9 +362,9 @@ code {
 
 @media (max-width: 600px) {
   .hero-title { font-size: 32px; }
-  .copy-bar { flex-direction: column; align-items: stretch; }
-  .copy-url { order: -1; }
-  .btn--accent { width: 100%; }
+  .copy-bar { flex-direction: row; flex-wrap: nowrap; gap: 8px; }
+  .copy-url { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn--accent { width: auto; }
   .nav { display: none; }
   .project-item { flex-direction: column; align-items: flex-start; gap: 6px; }
   .project-version, .project-muted { margin-left: 0; }
