@@ -1,11 +1,11 @@
 # OmVersions
 
-[![GitHub release](https://img.shields.io/github/release/OmHackz-dev/OmVersions.svg?label=latest)](https://github.com/OmHackz-dev/OmVersions/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Cloudflare Workers](https://img.shields.io/badge/deployed-on-Cloudflare%20Workers-f38020?logo=cloudflare)](https://version.omhackz.top)
-[![TypeScript](https://img.shields.io/badge/lang-TypeScript-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Hono](https://img.shields.io/badge/framework-Hono-white?logo=hono)](https://hono.dev/)
-[![Vitest](https://img.shields.io/badge/tested-with-Vitest-yellow?logo=vitest)](https://vitest.dev/)
+[![GitHub release](https://shieldcn.dev/badge/version/latest)](https://github.com/OmHackz-dev/OmVersions/releases/latest)
+[![MIT License](https://shieldcn.dev/badge/license/MIT)](LICENSE)
+[![Cloudflare Workers](https://shieldcn.dev/badge/deployed-on/Cloudflare%20Workers)](https://version.omhackz.top)
+[![TypeScript](https://shieldcn.dev/badge/lang/TypeScript)](https://www.typescriptlang.org/)
+[![Hono](https://shieldcn.dev/badge/framework/Hono)](https://hono.dev/)
+[![Vitest](https://shieldcn.dev/badge/tested-with/Vitest)](https://vitest.dev/)
 
 OmVersions is a centralized version API that automatically fetches releases from registered GitHub repositories. Register a project once in `projects.json` and the API exposes releases, latest versions, assets, and update checks — no manual version entry required.
 
