@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.wrangler.dev/wrangler.jsonc",
+  "name": "omversions",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-06",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "RELEASE_CACHE_TTL": "300"
+  },
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS",
+    "include": ["index.html", "docs.html", "style.css", "script.js"]
+  },
+  "d1_databases": [],
+  "r2_buckets": []
+}
