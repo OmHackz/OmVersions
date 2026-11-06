@@ -1,11 +1,11 @@
 # OmVersions
 
-[![GitHub release](https://shieldcn.dev/badge/version/latest)](https://github.com/OmHackz-dev/OmVersions/releases/latest)
-[![MIT License](https://shieldcn.dev/badge/license/MIT)](LICENSE)
-[![Cloudflare Workers](https://shieldcn.dev/badge/deployed-on/Cloudflare%20Workers)](https://version.omhackz.top)
-[![TypeScript](https://shieldcn.dev/badge/lang/TypeScript)](https://www.typescriptlang.org/)
-[![Hono](https://shieldcn.dev/badge/framework/Hono)](https://hono.dev/)
-[![Vitest](https://shieldcn.dev/badge/tested-with/Vitest)](https://vitest.dev/)
+[![GitHub release](https://shieldcn.dev/github/release/OmHackz-dev/OmVersions.svg)](https://github.com/OmHackz-dev/OmVersions/releases/latest)
+[![MIT License](https://shieldcn.dev/github/license/OmHackz-dev/OmVersions.svg)](LICENSE)
+[![Cloudflare Workers](https://shieldcn.dev/badge/Cloudflare%20Workers-f38020.svg)](https://version.omhackz.top)
+[![TypeScript](https://shieldcn.dev/badge/lang-TypeScript-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![Hono](https://shieldcn.dev/badge/framework-Hono-white.svg?logo=hono)](https://hono.dev/)
+[![Vitest](https://shieldcn.dev/badge/tested-with-Vitest-yellow.svg?logo=vitest)](https://vitest.dev/)
 
 OmVersions is a centralized version API that automatically fetches releases from registered GitHub repositories. Register a project once in `projects.json` and the API exposes releases, latest versions, assets, and update checks — no manual version entry required.
 
@@ -145,12 +145,9 @@ Optional secret (never committed):
 ```bash
 wrangler secret put GITHUB_TOKEN
 ```
-
 ## GitHub Actions
 
-On push to `main`: install dependencies, typecheck, test, build, and deploy (when `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets are configured). Pull requests run validation only.
-
-Configuration-only updates (edits to `projects.json`) validate, test, build, and deploy automatically — no application code changes necessary.
+No CI/CD workflow is included. Deploy manually with `wrangler deploy` after setting the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets (or attach them via `wrangler config`).
 
 ## Environment variables
 
