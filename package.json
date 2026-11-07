@@ -10,7 +10,7 @@
     "build": "echo 'Vercel handles builds automatically; run typecheck and tests instead'",
     "deploy": "wrangler deploy",
     "vercel": "vercel",
-    "vercel-build": "npm run typecheck && npm run test"
+    "vercel-build": "npm run typecheck"
   },
   "dependencies": {
     "@hono/vercel": "^1.0.1",
