@@ -9,9 +9,13 @@ import { createCacheService } from "./services/cache";
 import projectsConfig from "../projects.json";
 
 function getEnv(c: any): Env {
-  const workersEnv = env(c);
-  if (workersEnv && typeof workersEnv === "object") {
-    return workersEnv as Env;
+  try {
+    const workersEnv = env(c);
+    if (workersEnv && typeof workersEnv === "object" && !Array.isArray(workersEnv)) {
+      return workersEnv as Env;
+    }
+  } catch {
+    // Not a Cloudflare Workers environment
   }
   return {
     GITHUB_TOKEN: typeof process !== "undefined" && process.env ? process.env.GITHUB_TOKEN : undefined,
