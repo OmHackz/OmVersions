@@ -12,6 +12,7 @@ A centralized, edge-hosted version API that automatically pulls releases from yo
 [![Contributors](https://shieldcn.dev/github/contributors/OmHackz/OmVersions.svg)](https://github.com/OmHackz/OmVersions/graphs/contributors)
 
 [![Cloudflare Workers](https://shieldcn.dev/badge/Cloudflare%20Workers-f38020.svg?logo=cloudflare)](https://version.omhackz.top)
+[![Vercel](https://shieldcn.dev/badge/Vercel-000000.svg?logo=vercel)](https://vercel.com)
 [![TypeScript](https://shieldcn.dev/badge/TypeScript-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![Hono](https://shieldcn.dev/badge/Hono-e36002.svg?logo=hono)](https://hono.dev/)
 [![Vitest](https://shieldcn.dev/badge/Verified%20with-Vitest-6e9f18.svg?logo=vitest)](https://vitest.dev/)
@@ -316,7 +317,7 @@ if data["success"] and data["data"]["updateAvailable"]:
 
 This clones the repo into your GitHub account, creates the Worker on your Cloudflare account, and deploys it. Afterwards, edit `projects.json` in your copy and push to redeploy.
 
-### Manual deploy
+### Manual deploy (Cloudflare Workers)
 
 ```bash
 npm install
@@ -332,15 +333,26 @@ npm run deploy
 wrangler secret put GITHUB_TOKEN
 ```
 
+### Deploy to Vercel
+
+OmVersions can also be deployed to Vercel using the included `vercel.json` and `api/index.ts` entrypoint:
+
+1. Install the Vercel CLI: `npm i -g vercel`
+2. Run `vercel` in the project directory and follow the prompts.
+3. Set the `RELEASE_CACHE_TTL` environment variable in the Vercel dashboard if you want a custom cache TTL (default: 300 seconds).
+4. Set `GITHUB_TOKEN` in the Vercel dashboard for higher GitHub API rate limits (optional).
+
+**Custom domain:** add `version.omhackz.top` as a domain in the Vercel project settings.
+
 ### CI
 
-GitHub Actions runs TypeScript validation and tests on every push to `main` and on pull requests. No deployment is performed automatically; deploy manually with `wrangler deploy`.
+GitHub Actions runs TypeScript validation and tests on every push to `main` and on pull requests. No deployment is performed automatically; deploy manually with `wrangler deploy` or `vercel deploy`.
 
 ```mermaid
 flowchart LR
     P["Push / PR"] --> T["tsc type-check"] --> V["Vitest"] --> G{"Green?"}
     G -- "Yes" --> M["Ready to merge"]
-    M --> D["Manual: wrangler deploy"]
+    M --> D["Manual: wrangler deploy / vercel deploy"]
     G -- "No" --> X["❌ Fix & push again"]
 ```
 

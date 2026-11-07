@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/index.ts" }
+  ],
+  "env": {
+    "RELEASE_CACHE_TTL": "300"
+  }
+}
