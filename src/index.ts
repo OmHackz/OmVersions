@@ -9,13 +9,13 @@ import { createCacheService } from "./services/cache";
 import projectsConfig from "../projects.json";
 
 function getEnv(c: any): Env {
-  const workersEnv = getEnv(c);
+  const workersEnv = env(c);
   if (workersEnv && typeof workersEnv === "object") {
     return workersEnv as Env;
   }
   return {
-    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
-    RELEASE_CACHE_TTL: process.env.RELEASE_CACHE_TTL,
+    GITHUB_TOKEN: typeof process !== "undefined" && process.env ? process.env.GITHUB_TOKEN : undefined,
+    RELEASE_CACHE_TTL: typeof process !== "undefined" && process.env ? process.env.RELEASE_CACHE_TTL : undefined,
   };
 }
 
