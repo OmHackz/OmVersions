@@ -8,6 +8,17 @@ import { createGitHubService } from "./services/github";
 import { createCacheService } from "./services/cache";
 import projectsConfig from "../projects.json";
 
+function getEnv(c: any): Env {
+  const workersEnv = getEnv(c);
+  if (workersEnv && typeof workersEnv === "object") {
+    return workersEnv as Env;
+  }
+  return {
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+    RELEASE_CACHE_TTL: process.env.RELEASE_CACHE_TTL,
+  };
+}
+
 export function createApp() {
   const app = new Hono<{ Bindings: Env }>();
 
@@ -98,7 +109,7 @@ export function createApp() {
   });
 
   app.get("/api/v1/projects", (c) => {
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const list = config.projects.map((p: ProjectConfig) => ({
       id: p.id,
       repository: p.repo,
@@ -114,7 +125,7 @@ export function createApp() {
   });
 
   app.get("/api/v1/stats", (c) => {
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const stats = {
       projects: config.projects.length,
       endpoints: [
@@ -149,7 +160,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const service = new ReleaseService(
       bindings,
       createGitHubService(bindings.GITHUB_TOKEN),
@@ -199,7 +210,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const channel = c.req.query("channel") ?? "stable";
     const service = new ReleaseService(
       bindings,
@@ -224,7 +235,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const channel = c.req.query("channel");
     const service = new ReleaseService(
       bindings,
@@ -251,7 +262,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const tag = c.req.param("tag");
     const service = new ReleaseService(
       bindings,
@@ -276,7 +287,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const channel = c.req.query("channel") ?? "stable";
     const service = new ReleaseService(
       bindings,
@@ -309,7 +320,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const channel = c.req.query("channel") ?? "stable";
     const service = new ReleaseService(
       bindings,
@@ -340,7 +351,7 @@ export function createApp() {
       throw HttpError.for("PROJECT_NOT_FOUND");
     }
 
-    const bindings = env(c) as unknown as Env;
+    const bindings = getEnv(c) as unknown as Env;
     const current = c.req.query("current");
     const channel = c.req.query("channel") ?? "stable";
 
