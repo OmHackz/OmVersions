@@ -1,8 +1,6 @@
 import { createApp } from "../src/index";
 import { handle } from "@hono/vercel";
 
-export const runtime = "edge";
-
 const app = createApp();
 
 export const GET = handle(app);
