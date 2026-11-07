@@ -314,6 +314,7 @@ if data["success"] and data["data"]["updateAvailable"]:
 ### One-click deploy
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/OmHackz/OmVersions)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/OmHackz/OmVersions)
 
 This clones the repo into your GitHub account, creates the Worker on your Cloudflare account, and deploys it. Afterwards, edit `projects.json` in your copy and push to redeploy.
 
