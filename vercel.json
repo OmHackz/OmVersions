@@ -1,9 +1,7 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/(.*)", "dest": "/api/index.ts" }
-  ],
-  "env": {
-    "RELEASE_CACHE_TTL": "300"
-  }
+    { "src": "/api/(.*)", "dest": "/api/index.ts" },
+    { "src": "/health", "dest": "/api/index.ts" }
+  ]
 }

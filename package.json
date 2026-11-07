@@ -7,8 +7,10 @@
     "dev": "wrangler dev",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "wrangler deploy --dry-run",
-    "deploy": "wrangler deploy"
+    "build": "echo 'Vercel handles builds automatically; run typecheck and tests instead'",
+    "deploy": "wrangler deploy",
+    "vercel": "vercel",
+    "vercel-build": "npm run typecheck && npm run test"
   },
   "dependencies": {
     "@hono/vercel": "^1.0.1",
